@@ -1,0 +1,568 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Rime &mdash; Rime 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Rime 1.0 documentation" href="#" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="#">Rime 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="rime">
+<h1>Rime<a class="headerlink" href="#rime" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id1">
+<h2>Rime とは<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>Rime はプログラミングコンテストの問題セットの作成を補助するツールです。</p>
+<p>ACM-ICPC 形式や TopCoder 形式のプログラミングコンテストを開く際、問題を出すために準備しなければならないものは何があるでしょうか。問題案は既にあるものとすると、必要なものは主に次の4つに大別されます。</p>
+<ol class="arabic simple">
+<li><strong>問題文</strong>. 最初から凝った文章を作る必要はもちろんありませんが、少なくとも問題の骨子と入出力形式はあらかじめ決めておかなければなりません。</li>
+<li><strong>模範解答プログラム</strong>. 問題が解けることを証明するため、入出力データを作るため、その他あらゆる理由のために模範解答プログラムが必要です。ここで最も重要なことは、模範解答は複数用意されるべきだということです。複数の解答を複数の人間が用意して、その出力を照合することによって、解答プログラムの誤りを大幅に減らすことができます。また必須ではありませんが、想定解法と比べて計算量が大きすぎる解法や、一見正しそうに見えてエッジケースで間違う解法などの、想定「誤答」のプログラムを作成しておけば、それらを振り落とす入力データを作ることが容易になります。</li>
+<li><strong>入出力データ</strong>. 小さな入力データは手で直接作ることができますが、大きなエッジケースやランダムケースに対応する入力データはプログラムで作ることになります。出力データは入力データを模範解答プログラムに入れて作成します。</li>
+<li><strong>入出力検証器</strong>. 入力データのフォーマットが合っているかどうかは、模範解答プログラムとは別のプログラムであらためて検証することが望ましいでしょう。また、出力形式が浮動小数点数を含む場合など、単純な diff プログラムで間に合わない場合には、出力検証器を用意する必要もあります。</li>
+</ol>
+<p>Rime は、この 4 つの項目のうち、問題文を除いた残りのすべての準備作業を補助します。たとえば、次のようなことができます。</p>
+<ul class="simple">
+<li>手動で作成した入力データや入力ジェネレータを適切な場所に置いておけば、コマンド1つで入力ジェネレータを実行しデータセットを作成することができます。</li>
+<li>生成された入力データセットを自動的に入力検証器に通し、フォーマット違反がないかどうかをチェックします。</li>
+<li>複数の模範解答プログラムを自動的にコンパイルし、それらの出力が一致するかどうかをチェックします。</li>
+<li>&#8220;想定誤答プログラム&#8221;を置いておくと、そのプログラムがジャッジを通過しないことをチェックし、万が一通ってしまった場合は警告を出します。</li>
+<li>各問題について、模範解答プログラムを走らせた結果を分かりやすく表示します。</li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h2>ダウンロード<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<p>Github のプロジェクトページ <a class="reference external" href="https://github.com/nya3jp/rime">https://github.com/nya3jp/rime</a> から ZIP をダウンロードするか、git を使って次のように clone してください:</p>
+<div class="highlight-python"><pre>$ git clone https://github.com/nya3jp/rime.git</pre>
+</div>
+<p>リポジトリのトップディレクトリにある rime.py および rime ディレクトリが Rime の本体です。
+自分のプロジェクトで Rime を使用するときは、この 2 つを問題データを管理しているリポジトリなどにコピーして下さい。</p>
+</div>
+<div class="section" id="id3">
+<h2>クイックスタート<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<p>ここでは、あらかじめ用意された設定例を使って Rime を実行し、Rime の機能の概略を紹介します。</p>
+<p>以下では、前節で ~/src/rime に Rime をダウンロードしたと仮定します。</p>
+<div class="highlight-python"><pre>$ cd ~/src/rime</pre>
+</div>
+<p>このディレクトリには次のようなファイルが存在するはずです(最新版ではもう少しファイルが多い可能性もあります)。</p>
+<div class="highlight-python"><pre>$ ls -l
+total 12
+-rw-r--r-- 1 nya nya    0 May 11 23:55 README
+drwxr-xr-x 3 nya nya 4096 May 11 23:55 example
+drwxr-xr-x 6 nya nya 4096 May 11 23:55 rime
+-rwxr-xr-x 1 nya nya 1215 May 11 23:55 rime.py</pre>
+</div>
+<p>example ディレクトリには設定例が用意されていますので、そこに移動しましょう。</p>
+<div class="highlight-python"><pre>$ cd example
+$ ls -l
+total 8
+-rw-r--r-- 1 nya nya   96 May 11 23:55 PROJECT
+drwxr-xr-x 6 nya nya 4096 May 11 23:55 a+b
+lrwxrwxrwx 1 nya nya    7 May 12 00:10 rime -&gt; ../rime
+lrwxrwxrwx 1 nya nya   10 May 11 23:55 rime.py -&gt; ../rime.py</pre>
+</div>
+<p>このディレクトリ以下には、コンテストの問題・解答・入出力ジェネレータなど全てに関する設定が保存されています。このようなディレクトリを <strong>プロジェクトディレクトリ</strong> と呼びます。</p>
+<p>プロジェクトディレクトリには Rime 本体とプロジェクト設定ファイル(PROJECT)、そして問題ディレクトリを置きます。問題ディレクトリは通常複数あるでしょうが、この例では一問だけ (a+b) 用意されています。プロジェクトディレクトリ以下には Rime が認識するもの以外のディレクトリやファイルがあっても問題ありません。なお、このプロジェクト例では簡単のため Rime 本体をシンボリックリンクとして置いてありますが、通常のプロジェクトではファイルをまるごとコピーして置くと良いでしょう。</p>
+<p>早速 Rime を実行してみましょう。</p>
+<div class="highlight-python"><pre>$ ./rime.py test
+[ GENERATE ] a+b/tests: generator.py
+[ VALIDATE ] a+b/tests: OK
+[ COMPILE  ] a+b/cpp-correct
+[  REFRUN  ] a+b/cpp-correct
+[ COMPILE  ] a+b/cpp-TLE
+[   TEST   ] a+b/cpp-TLE: 11-maximum.in: Time Limit Exceeded
+[ COMPILE  ] a+b/cpp-WA-multiply
+[   TEST   ] a+b/cpp-WA-multiply: Expectedly failed all challenge cases
+[   TEST   ] a+b/cpp-correct: max 0.00s, acc 0.09s
+[   TEST   ] a+b/python-correct: max 0.04s, acc 0.72s
+
+Test Summary:
+a+b ... 4 solutions, 24 tests
+  cpp-correct      OK  max 0.00s, acc 0.09s
+  python-correct   OK  max 0.04s, acc 0.72s
+  cpp-TLE          OK  11-maximum.in: Time Limit Exceeded
+  cpp-WA-multiply  OK  Expectedly failed all challenge cases
+
+Error Summary:
+Total 0 errors, 0 warnings</pre>
+</div>
+<p>このコマンドは数秒で終了するはずです。この間に Rime は次の処理を行いました。</p>
+<ul class="simple">
+<li>問題ディレクトリ a+b 以下にある 4 つの解答 (cpp-correct, python-correct, cpp-TLE, cpp-WA-multiply) のコンパイル</li>
+<li>入出力ディレクトリ a+b/tests 以下にある入力生成器と入力検証器のコンパイル</li>
+<li>入力生成器を使ったランダム入力データの生成</li>
+<li>入力検証器を使った全入力データのフォーマットチェック</li>
+<li>解答プログラム a+b/cpp-correct に入力データを入れて走らせ、リファレンスとなる出力データを生成</li>
+<li>解答プログラム a+b/python-correct を走らせ、リファレンス出力データと同じ出力を出すことを確認</li>
+<li>誤答プログラム a+b/cpp-WA-multiply を走らせ、間違った出力を出すことを確認</li>
+<li>誤答プログラム a+b/cpp-TLE を走らせ、指定したタイムリミット (1秒) 内に終了しないことを確認</li>
+</ul>
+<p>Rime が正しく動いていることを確認するため、試しに解答プログラムにバグを入れてみましょう。名前からお察しのとおり、問題 a+b は標準入力から二つの数を受け取り、その和を標準出力に書き出すプログラムを書け、という問題です。python-correct プログラムは次のようなコードになっています:</p>
+<div class="highlight-python"><pre>$ cat a+b/python-correct/main.py
+#!/usr/bin/python
+
+import sys
+
+def main():
+  a, b = map(int, sys.stdin.read().strip().split())
+  print a + b
+
+if __name__ == '__main__':
+  main()</pre>
+</div>
+<p>これを、掛け算をするプログラムに書き換えます。</p>
+<div class="highlight-python"><pre>$ vi a+b/python-correct/main.py
+...
+$ cat a+b/python-correct/main.py
+#!/usr/bin/python
+
+import sys
+
+def main():
+  a, b = map(int, sys.stdin.read().strip().split())
+  print a * b  # i can haz moar?
+
+if __name__ == '__main__':
+  main()</pre>
+</div>
+<p>再び Rime を実行してみましょう。</p>
+<div class="highlight-python"><pre>$ ./rime.py test
+[   TEST   ] a+b/cpp-TLE: 11-maximum.in: Time Limit Exceeded
+[   TEST   ] a+b/cpp-WA-multiply: Expectedly failed all challenge cases
+[   TEST   ] a+b/cpp-correct: max 0.01s, acc 0.09s
+ERROR: a+b/python-correct: 00-sample1.in: Wrong Answer
+  judge log: /home/nya/src/rime/example/a+b/rime-out/python-correct/00-sample1.judge
+[   TEST   ] a+b/python-correct: 00-sample1.in: Wrong Answer
+
+Test Summary:
+a+b ... 4 solutions, 24 tests
+  cpp-correct      OK  max 0.01s, acc 0.09s
+  python-correct  FAIL 00-sample1.in: Wrong Answer
+  cpp-TLE          OK  11-maximum.in: Time Limit Exceeded
+  cpp-WA-multiply  OK  Expectedly failed all challenge cases
+
+Error Summary:
+ERROR: a+b/python-correct: 00-sample1.in: Wrong Answer
+  judge log: /home/nya/src/rime/example/a+b/rime-out/python-correct/00-sample1.judge
+Total 1 errors, 0 warnings</pre>
+</div>
+<p>python-correct が 00-sample1.in で間違っていた、とのメッセージが出ています。具体的にどのような出力をしたのかはジャッジログファイルに残っています。</p>
+<div class="highlight-python"><pre>$ cat /home/nya/src/rime/example/a+b/rime-out/python-correct/00-sample1.judge
+--- /home/nya/src/rime/example/a+b/rime-out/tests/00-sample1.diff       2012-05-12 00:54:54.463139744 +0900
++++ /home/nya/src/rime/example/a+b/rime-out/python-correct/00-sample1.out       2012-05-12 01:08:55.827436428 +0900
+@@ -1 +1 @@
+-7
++12</pre>
+</div>
+</div>
+<div class="section" id="id4">
+<h2>プロジェクトディレクトリの構成<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<p>Rime のプロジェクトディレクトリツリーは以下のような構成になります。</p>
+<ul>
+<li><dl class="first docutils">
+<dt>プロジェクトディレクトリ</dt>
+<dd><ul class="first last">
+<li><dl class="first docutils">
+<dt>問題ディレクトリ</dt>
+<dd><ul class="first last simple">
+<li>解答ディレクトリ</li>
+<li>解答ディレクトリ</li>
+<li>...</li>
+<li>テストデータディレクトリ</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>問題ディレクトリ</dt>
+<dd><ul class="first last simple">
+<li>解答ディレクトリ</li>
+<li>解答ディレクトリ</li>
+<li>...</li>
+<li>テストデータディレクトリ</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">...</p>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>問題ディレクトリと解答ディレクトリは必要なだけ用意します。
+テストデータディレクトリは各問題あたり高々 1 つのみ作成できます。</p>
+<p>具体的なプロジェクトディレクトリの構成例を以下に示します。</p>
+<div class="highlight-python"><pre>project/
+  rime.py             ... Rime 実行ファイル
+  rime/               ... Rime ライブラリコード
+    ...
+  PROJECT             ... プロジェクト設定ファイル
+  problem-a/          ... 問題ディレクトリ
+    PROBLEM           ... 問題設定ファイル
+    solution-a1/      ... 解答ディレクトリ
+      SOLUTION        ... 解答設定ファイル
+      main.cc         ... ソースコード
+    solution-a2/      ... 解答ディレクトリ
+      ...
+    solution-a3/      ... 解答ディレクトリ
+      ...
+    tests/            ... テストデータディレクトリ
+      TESTSET         ... テスト設定ファイル
+      00_sample1.in   ... 入力ファイル
+      00_sample2.in   ... 入力ファイル
+      00_sample3.in   ... 入力ファイル
+      generator.cc    ... 入力生成器
+      validator.py    ... 入力検証器
+      judge.cc        ... 出力検証器
+  problem-b/         ... 問題ディレクトリ
+    ...
+  problem-c/         ... 問題ディレクトリ
+    ...</pre>
+</div>
+<p>問題ディレクトリ/解答ディレクトリには任意の名前が利用できます。テストディレクトリの名前も任意ですが、一般的には &#8220;tests&#8221; が用いられます。</p>
+<p>テストデータディレクトリにある拡張子 .in のファイルは全て自動的に入力ファイルとして扱われます。また、ここには入力生成器・入力検証器・出力検証器を置くことができます。その場合、ファイル名を TESTSET ファイルに記述します。詳しくは <a class="reference internal" href="#configs-testset"><em>TESTSET</em></a> を参照してください。</p>
+</div>
+<div class="section" id="id5">
+<h2>設定ファイル<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
+<p>すべての設定ファイルは Python スクリプトとして記述され、Rime の起動時に eval されます。各設定ファイルの種類に応じていくつかの関数が Rime よりエクスポートされており、それらを呼ぶことにより設定を行います。</p>
+<p>記述にあたっては Python の文法や標準ライブラリのすべてが利用可能ですが、可読性のためにシンプルな内容に留めておくことをおすすめします。一般的な用途では、設定関数の呼び出しを列挙するだけで十分です。</p>
+<div class="section" id="project">
+<h3>PROJECT<a class="headerlink" href="#project" title="Permalink to this headline">¶</a></h3>
+<p>プロジェクトディレクトリのトップレベルに置かれ、プロジェクト全体に共通の設定を記述します。</p>
+<dl class="function">
+<dt id="use_plugin">
+<tt class="descname">use_plugin</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#use_plugin" title="Permalink to this definition">¶</a></dt>
+<dd><p>このプロジェクトで用いるプラグインをロードします。詳しくは <a class="reference internal" href="#plugins"><em>プラグイン</em></a> を参照して下さい。</p>
+<p>例:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">use_plugin</span><span class="p">(</span><span class="s">&#39;merged_test&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="problem">
+<h3>PROBLEM<a class="headerlink" href="#problem" title="Permalink to this headline">¶</a></h3>
+<p>問題ディレクトリの直下に置かれ、問題に関する設定を記述します。デフォルトでは <tt class="xref py py-func docutils literal"><span class="pre">problem()</span></tt> 関数のみが定義されており、 <tt class="xref py py-func docutils literal"><span class="pre">problem()</span></tt> 関数をちょうど一回呼び出さなければなりません。</p>
+<dl class="function">
+<dt>
+<tt class="descname">problem</tt><big>(</big><em>time_limit</em>, <em>reference_solution=None</em>, <em>title=None</em>, <em>id=None</em><big>)</big></dt>
+<dd><p>必要な引数はただひとつ <em>time_limit</em> のみです。この引数には、この問題に対する解答のテストをする際に、一つのテストケースに対して許される実行時間の上限を秒単位で指定します。</p>
+<p><em>reference_solution</em> には、解答のテストを行う際に基準となる解答のディレクトリ名を指定します。基準解答はその出力が正しいと仮定され、ある問題に対する複数の解答がすべて一致していることを確認するときに、他の解答と出力を照合するために用いられます。指定がない場合は任意の解答がひとつ選ばれます。</p>
+<p><em>title</em> には問題のタイトルを任意の文字列で指定します。</p>
+<p><em>id</em> には問題のソートに使われる任意の文字列を指定します(一般的には &#8216;A&#8217;, &#8216;B&#8217;, ... が用いられます)。指定がない場合は問題ディレクトリ名でソートされます。</p>
+<p>例:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">problem</span><span class="p">(</span><span class="n">time_limit</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
+<span class="n">problem</span><span class="p">(</span><span class="n">time_limit</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">reference_solution</span><span class="o">=</span><span class="s">&#39;solution1&#39;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s">&#39;C&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="testset">
+<span id="configs-testset"></span><h3>TESTSET<a class="headerlink" href="#testset" title="Permalink to this headline">¶</a></h3>
+<p>テストデータディレクトリに置かれ、問題の解答を検証するためのテスト入出力に関する設定を行います。</p>
+<p>このファイルでは (1) 入力生成器, (2) 入力検証器, (3) 出力検証器 の 3 つが指定でき、それぞれ <tt class="xref py py-func docutils literal"><span class="pre">LANG_generator()</span></tt>, <a class="reference internal" href="#LANG_validator" title="LANG_validator"><tt class="xref py py-func docutils literal"><span class="pre">LANG_validator()</span></tt></a>, <a class="reference internal" href="#LANG_judge" title="LANG_judge"><tt class="xref py py-func docutils literal"><span class="pre">LANG_judge()</span></tt></a> 関数を呼び出して登録します。各プログラムの仕様については <a class="reference internal" href="#testspec"><em>テスト入出力の仕様</em></a> を参照してください。</p>
+<dl class="function">
+<dt id="c_generator">
+<tt class="descname">c_generator</tt><big>(</big><em>src_name, flags=['-lm']</em><big>)</big><a class="headerlink" href="#c_generator" title="Permalink to this definition">¶</a></dt>
+<dd><p>C で書かれた入力生成器を登録します。</p>
+<p><em>src_name</em> にはソースコードの名前を拡張子付きで指定します。</p>
+<p><em>flags</em> にはコンパイラに渡すフラグを文字列のリストで指定します。</p>
+<p>例:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">c_generator</span><span class="p">(</span><span class="s">&#39;generator.c&#39;</span><span class="p">)</span>
+<span class="n">c_generator</span><span class="p">(</span><span class="s">&#39;generator.c&#39;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;-lgmp&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="cc_generator">
+<tt class="descname">cc_generator</tt><big>(</big><em>src_name</em>, <em>flags=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#cc_generator" title="Permalink to this definition">¶</a></dt>
+<dt id="cxx_generator">
+<tt class="descname">cxx_generator</tt><big>(</big><em>src_name</em>, <em>flags=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#cxx_generator" title="Permalink to this definition">¶</a></dt>
+<dd><p>C++ で書かれた入力生成器を登録します。</p>
+<p><em>src_name</em> にはソースコードの名前を拡張子付きで指定します。</p>
+<p><em>flags</em> にはコンパイラに渡すフラグを文字列のリストで指定します。</p>
+<p>例:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">cc_generator</span><span class="p">(</span><span class="s">&#39;generator.cc&#39;</span><span class="p">)</span>
+<span class="n">cxx_generator</span><span class="p">(</span><span class="s">&#39;generator.cpp&#39;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;-lgmpxx&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="java_generator">
+<tt class="descname">java_generator</tt><big>(</big><em>src_name</em>, <em>compile_flags=</em><span class="optional">[</span><span class="optional">]</span>, <em>run_flags=</em><span class="optional">[</span><span class="optional">]</span>, <em>encoding='UTF-8'</em>, <em>mainclass='Main'</em><big>)</big><a class="headerlink" href="#java_generator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Java で書かれた入力生成器を登録します。</p>
+<p><em>src_name</em> にはソースコードの名前を拡張子付きで指定します。</p>
+<p><em>compile_flags</em>, <em>run_flags</em> にはコンパイル時および実行時に渡すフラグを文字列のリストで指定します。</p>
+<p><em>encoding</em> にはソースコードのエンコーディングを指定します。省略すると UTF-8 と見なされます。</p>
+<p><em>mainclass</em> には実行する際のエントリポイントとなるクラス名を指定します。省略すると Main が使われます。</p>
+<p>例:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">java_generator</span><span class="p">(</span><span class="s">&#39;Generator.java&#39;</span><span class="p">)</span>
+<span class="n">java_generator</span><span class="p">(</span><span class="s">&#39;Generator.java&#39;</span><span class="p">,</span> <span class="n">compile_flags</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;-source&#39;</span><span class="p">,</span> <span class="s">&#39;1.4&#39;</span><span class="p">],</span> <span class="n">run_flags</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;-agentlib:hprof&#39;</span><span class="p">],</span> <span class="n">encoding</span><span class="o">=</span><span class="s">&#39;cp932&#39;</span><span class="p">,</span> <span class="n">mainclass</span><span class="o">=</span><span class="s">&#39;Start&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="script_generator">
+<tt class="descname">script_generator</tt><big>(</big><em>src_name</em>, <em>run_flags=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#script_generator" title="Permalink to this definition">¶</a></dt>
+<dd><p>スクリプト言語で書かれた入力生成器を登録します。スクリプトの冒頭は、使用するプログラミング言語を明示するために <tt class="docutils literal"><span class="pre">#!</span></tt> (shebang) で始まらなければなりません。Rime は shebang を解釈するためにスクリプトを perl インタプリタに渡すので、shebang が存在しない場合は perl スクリプトとして実行されます。</p>
+<p><em>src_name</em> にはソースコードの名前を拡張子付きで指定します。</p>
+<p><em>run_flags</em> には実行時にスクリプトに渡すパラメータを文字列のリストで指定します。</p>
+<p>例:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">script_generator</span><span class="p">(</span><span class="s">&#39;generator.rb&#39;</span><span class="p">)</span>
+<span class="n">script_generator</span><span class="p">(</span><span class="s">&#39;generator.py&#39;</span><span class="p">,</span> <span class="n">run_flags</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;-R&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="LANG_validator">
+<tt class="descname">LANG_validator</tt><big>(</big><em>src_name</em>, <em>**code_kwargs</em><big>)</big><a class="headerlink" href="#LANG_validator" title="Permalink to this definition">¶</a></dt>
+<dd><p>入力検証器を登録します。言語と各種パラメータの指定方法は入力生成器と同じです。</p>
+<p>例:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">script_validator</span><span class="p">(</span><span class="s">&#39;validate.py&#39;</span><span class="p">)</span>
+<span class="n">cc_validator</span><span class="p">(</span><span class="s">&#39;validator.cc&#39;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;-lgmpxx&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="LANG_judge">
+<tt class="descname">LANG_judge</tt><big>(</big><em>src_name</em>, <em>**code_kwargs</em><big>)</big><a class="headerlink" href="#LANG_judge" title="Permalink to this definition">¶</a></dt>
+<dd><p>出力検証器を登録します。言語と各種パラメータの指定方法は入力生成器と同じです。</p>
+<p>例:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">script_judge</span><span class="p">(</span><span class="s">&#39;judge.py&#39;</span><span class="p">)</span>
+<span class="n">cc_judge</span><span class="p">(</span><span class="s">&#39;judge.cc&#39;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;-lgmpxx&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="solution">
+<h3>SOLUTION<a class="headerlink" href="#solution" title="Permalink to this headline">¶</a></h3>
+<p>解答ディレクトリに置かれ、解答プログラムに関する設定を行います。この中では <a class="reference internal" href="#LANG_solution" title="LANG_solution"><tt class="xref py py-func docutils literal"><span class="pre">LANG_solution()</span></tt></a> 関数をちょうど一回呼び出さなければなりません。</p>
+<dl class="function">
+<dt id="LANG_solution">
+<tt class="descname">LANG_solution</tt><big>(</big><em>src_name</em>, <em>challenge_cases=None</em>, <em>**code_kwargs</em><big>)</big><a class="headerlink" href="#LANG_solution" title="Permalink to this definition">¶</a></dt>
+<dd><p>解答プログラムを登録します。言語と各種パラメータの指定方法は入力生成器と同じですが、追加で指定できるパラメータが存在します。</p>
+<p><em>challenge_cases</em> にはテスト入力ファイルの名前を列挙したリストを指定することができます。指定があった場合、この解答は誤答であるとマークされます。通常の解答はテストがすべて成功することをチェックされるのに対し、誤答はテストが失敗することがテストされます。また、誤答が基準解答として選ばれることはありません。 <em>challenge_cases</em> が空のリストである場合は全テスト中最低でも一つのテストに失敗することがチェックされ、空でないリストを指定した場合、指定されたテストのすべてに失敗することがチェックされます。</p>
+<p>例:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">script_solution</span><span class="p">(</span><span class="s">&#39;adhoc.py&#39;</span><span class="p">,</span> <span class="n">run_flags</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;-R&#39;</span><span class="p">])</span>
+<span class="n">cc_solution</span><span class="p">(</span><span class="s">&#39;wrong_any.cc&#39;</span><span class="p">,</span> <span class="n">challenge_cases</span><span class="o">=</span><span class="p">[])</span>
+<span class="n">cc_solution</span><span class="p">(</span><span class="s">&#39;wrong_some.cc&#39;</span><span class="p">,</span> <span class="n">challenge_cases</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;input1.in&#39;</span><span class="p">,</span> <span class="s">&#39;input3.in&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="testspec">
+<span id="id6"></span><h2>テスト入出力の仕様<a class="headerlink" href="#testspec" title="Permalink to this headline">¶</a></h2>
+<p>テストの入出力ファイルはそれぞれ拡張子 .in, .diff を持ちます。</p>
+<p>テストは次のように行われます。</p>
+<ol class="arabic simple">
+<li>すべての解答ディレクトリ、およびテストデータディレクトリ全体を rime-out ディレクトリ以下にコピーする。</li>
+<li>解答、入力生成器、入力検証器、出力検証器のコンパイルを行う。</li>
+<li>すべての入力生成器を rime-out ディレクトリ内で実行する。これにより rime-out ディレクトリにすべてのテストケースに対応する .in ファイルが作成される。</li>
+<li>全ての入力データに対して入力検証器を実行する。ひとつでも検証エラーが発生した場合はストップする。</li>
+<li>基準解答を選択する。テストケースのうち .diff ファイルが存在しないものに対して基準解答を実行し、その出力を .diff ファイルとして保存する。</li>
+<li>基準解答以外の各解答を、各テストケースを入力として実行する。その出力は基準解答の出力と出力検証器を用いて比較される。出力検証器が指定されていない場合、単純にバイナリとして一致することの照合が diff コマンドによって行われる。</li>
+</ol>
+<p>以下で入力生成器、入力検証器、出力検証器の仕様を説明します。</p>
+<div class="section" id="id7">
+<h3>入力生成器<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<p>入力ファイルを追加する方法には、固定入力ファイルを追加する方法と入力生成器を追加する方法があります。固定入力ファイルは主に小さなテストケースや手動で作成したテストケースに用い、テストデータディレクトリに .in の拡張子で配置します。大きなテストケースやランダム生成したテストケースを入力したい場合は入力生成器を用います。</p>
+<p>入力生成器は実行されるとカレントディレクトリに入力ファイルを拡張子 .in で書き出すよう記述します。実行は rime-out ディレクトリ以下で行われます。</p>
+</div>
+<div class="section" id="id8">
+<h3>入力検証器<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<p>入力検証器は、標準入力から入力データを受け取り、入力フォーマットが正しければ 0、そうでなければ 0 以外をリターンコードとして返します。</p>
+<p>入力検証器はデバッグのための情報を標準出力に書き出すことができます。検証エラーの際にはその内容がコンソールに出力されます。</p>
+</div>
+<div class="section" id="id9">
+<h3>出力検証器<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<p>出力検証器は、入力データ、基準解答の出力データ、そして解答の出力データを受け取り、解答が基準解答と一致することを検証します。一致すれば 0、そうでなければ 0 以外をリターンコードとして返します。</p>
+<p>実行時には各データの所在を示すため、次のようなコマンドライン引数が指定されます:</p>
+<ul class="simple">
+<li>&#8211;infile &lt;入力データファイル名&gt;</li>
+<li>&#8211;difffile &lt;基準解答出力データファイル名&gt;</li>
+<li>&#8211;outfile &lt;解答出力データファイル名&gt;</li>
+</ul>
+<p>出力検証器はデバッグのための情報を標準出力に書き出すことができます。検証エラーの際にはその内容がコンソールに出力されます。</p>
+</div>
+</div>
+<div class="section" id="id10">
+<h2>コマンド<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h2>
+<p>Rime の実行は次のように行います。</p>
+<div class="highlight-python"><pre>./rime.py COMMAND [OPTIONS] [ARGS]</pre>
+</div>
+<p>コマンドを指定せずに実行するとヘルプメッセージが表示されます。また、 <tt class="docutils literal"><span class="pre">rime.py</span> <span class="pre">help</span> <span class="pre">COMMAND</span></tt> を実行するとコマンドに関するヘルプを見ることができます。</p>
+<p>すべてのコマンドに共通のオプションは以下のようなものがあります。</p>
+<dl class="cmdoption">
+<dt id="cmdoption-j">
+<tt class="descname">-j</tt><tt class="descclassname"> &lt;n&gt;</tt><tt class="descclassname">, </tt><tt class="descname">--jobs</tt><tt class="descclassname"> &lt;n&gt;</tt><a class="headerlink" href="#cmdoption-j" title="Permalink to this definition">¶</a></dt>
+<dd><p>タスク(例: 解答の実行, 出力検証器の実行など)の並列実行を有効にします。一般に、マルチコア環境ではこのオプションを指定することによりパフォーマンスが向上します。</p>
+<p>このオプションを指定した場合、デフォルトでは解答の実行時間の計測時間が行われなくなります。実行時間を計測したい場合は <a class="reference internal" href="#cmdoption-p"><em class="xref std std-option">-p</em></a> オプションを使用して下さい。</p>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-p">
+<tt class="descname">-p</tt><tt class="descclassname"></tt><tt class="descclassname">, </tt><tt class="descname">--precise</tt><tt class="descclassname"></tt><a class="headerlink" href="#cmdoption-p" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#cmdoption-j"><em class="xref std std-option">-j</em></a> オプションによりタスクの並列実行が有効になっている時、実行時間の計測を伴うタスクと他のタスクを並列に実行しないようにすることにより、実行時間の計測を有効にします。これにより並列実行のパフォーマンスが犠牲になります。</p>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-k">
+<tt class="descname">-k</tt><tt class="descclassname"></tt><tt class="descclassname">, </tt><tt class="descname">--keep_going</tt><tt class="descclassname"></tt><a class="headerlink" href="#cmdoption-k" title="Permalink to this definition">¶</a></dt>
+<dd><p>ビルドやテストに失敗した際にも、影響のないタスクの実行を続行します。このオプションが指定されない場合、ひとつでもタスクが失敗するとすべてのタスクの実行が停止されます。</p>
+</dd></dl>
+
+<dl class="cmdoption">
+<dt id="cmdoption-C">
+<tt class="descname">-C</tt><tt class="descclassname"></tt><tt class="descclassname">, </tt><tt class="descname">--cache_tests</tt><tt class="descclassname"></tt><a class="headerlink" href="#cmdoption-C" title="Permalink to this definition">¶</a></dt>
+<dd><p>テスト結果をキャッシュすることにより、以前に実行したテストの実行を抑制します。</p>
+</dd></dl>
+
+<p>標準で使用出来るコマンドは以下の通りです。</p>
+<dl class="describe">
+<dt>
+<tt class="descname">rime.py help [COMMAND]</tt></dt>
+<dd><p>ヘルプメッセージを表示します。コマンドを指定すると、そのコマンドに関するヘルプを見ることができます。</p>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<tt class="descname">rime.py build [TARGET]</tt></dt>
+<dd><p>ターゲットをビルドします。ターゲットはディレクトリ名で指定します。たとえばプロジェクトディレクトリを指定するとプロジェクト内の全てのファイルをビルドし、解答ディレクトリを指定すると解答のみをビルドします。ターゲット指定を省略するとカレントディレクトリとみなされます。</p>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<tt class="descname">rime.py test [TARGET]</tt></dt>
+<dd><p>ターゲットをテストします。ターゲットの指定は rime.py build と同様です。テストが何を行うかについては [テスト入出力の仕様](#testspec) を参照して下さい。</p>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<tt class="descname">rime.py clean [TARGET]</tt></dt>
+<dd><p>ターゲットの中間ファイルを削除します。ターゲットの指定は rime.py build と同様です。中間ファイルはすべて rime-out ディレクトリに保存されています。</p>
+</dd></dl>
+
+</div>
+<div class="section" id="plugins">
+<span id="id11"></span><h2>プラグイン<a class="headerlink" href="#plugins" title="Permalink to this headline">¶</a></h2>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">TODO(nya): 書く</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Rime</a><ul>
+<li><a class="reference internal" href="#id1">Rime とは</a></li>
+<li><a class="reference internal" href="#id2">ダウンロード</a></li>
+<li><a class="reference internal" href="#id3">クイックスタート</a></li>
+<li><a class="reference internal" href="#id4">プロジェクトディレクトリの構成</a></li>
+<li><a class="reference internal" href="#id5">設定ファイル</a><ul>
+<li><a class="reference internal" href="#project">PROJECT</a></li>
+<li><a class="reference internal" href="#problem">PROBLEM</a></li>
+<li><a class="reference internal" href="#testset">TESTSET</a></li>
+<li><a class="reference internal" href="#solution">SOLUTION</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#testspec">テスト入出力の仕様</a><ul>
+<li><a class="reference internal" href="#id7">入力生成器</a></li>
+<li><a class="reference internal" href="#id8">入力検証器</a></li>
+<li><a class="reference internal" href="#id9">出力検証器</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id10">コマンド</a></li>
+<li><a class="reference internal" href="#plugins">プラグイン</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="#">Rime 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Rime Project.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
